@@ -1,0 +1,157 @@
+/* RESET */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* LAYAR UTAMA */
+.screen {
+  position: relative;           
+  width: 100vw;
+  min-height: 100vh;
+  min-height: 100svh;
+
+  
+  background: linear-gradient(
+    135deg,
+    #faf6ed 0%,
+    #ebe6cd 40%,
+    #faf6ed 100%
+  );
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
+}
+
+/* WALLPAPER (PALING BAWAH) */
+.wallpaper {
+  position: fixed;      /* tetap di layar saat scroll */
+  bottom: 0;            /* menempel di bawah viewport */
+  left: 50%;            /* posisi horizontal di tengah */
+  transform: translateX(-50%);  /* supaya benar-benar tengah */
+  width: 100vw;          /* bisa atur lebar */
+  max-width: 700px;     /* jangan melebihi layar */
+  height: auto;         /* proporsional */
+  z-index: 0;           /* pastikan berada di belakang konten */
+  pointer-events: none; /* klik form tidak terganggu */
+  user-select: none;    /* tidak bisa di-select */
+}
+
+
+/* KONTEN UTAMA (DI ATAS WALLPAPER) */
+.content {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-right: 20px;
+}
+
+/* LOGO */
+.logo {
+  width: 180px;
+  margin-bottom: 70px;
+  scale: 2.5;
+  margin-left: 20px;
+}
+
+/* TITLE IMAGE */
+.title-img {
+  width: 90vw;
+  max-width: 390px;
+  display: block;
+  margin-bottom: 5px;
+  margin-left: 20px;
+}
+
+/* FORM */
+.login-form {
+  width: 80vw;
+  max-width: 360px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.login-form label {
+  font-size: 14px;
+  color: #4d6b3a;
+  margin-top: 10px;
+  display: block;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #b7d08f;
+  outline: none;
+}
+
+.fieldemail, .fieldpassword {
+  height: 30px;        /* samakan tinggi */
+  width: auto;         /* jaga proporsi */
+  display: block;
+  object-fit: contain;
+  align-items: flex-start;
+}
+/* BUTTON IMAGE */
+.btn-img {
+  margin-top: 12px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  width: 90vw;
+  max-width: 260px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+  position: relative;
+  z-index: 3;                    /* PALING DEPAN */
+}
+
+.btn-img img {
+  width: 100%;
+  height: auto;
+}
+
+.btn-img img:active {
+  transform: scale(0.97);
+}
+
+.btn-img:hover {
+  transform: scale(1.03);
+  transition: 0.3s;
+}
+/* SIGNUP SECTION */
+.signup {
+  display: flex;
+  align-items: center;   /* sejajar vertikal */
+  gap: 3px;             /* jarak antar gambar */
+}
+
+/* target semua isi di dalam .signup */
+
+
+/* samakan tinggi gambar */
+.signup img {
+  height: 35px;   /* ubah sesuai kebutuhan */
+  width: auto;
+  display: block;
+}
+
+button,
+a,
+div {
+  -webkit-tap-highlight-color: transparent;
+}

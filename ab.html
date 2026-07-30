@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeaLink - Prototipe Interaktif</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Caveat:wght@600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+/* ============ Design tokens ============ */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root{
+  --green-deep:#4f6a3a;
+  --green-mid:#7c9757;
+  --green-light:#a9b878;
+  --green-pale:#c9d3a3;
+  --brown-deep:#3d2a1c;
+  --brown-mid:#6b4527;
+  --brown-warm:#8a6a45;
+  --cream-bg:#f2ead9;
+  --cream-card:#f8f1de;
+  --cream-line:#d8c7a0;
+  --gold:#e3ac3d;
+  --gold-deep:#c98f22;
+  --peach:#e8a78f;
+  --ink:#3c2c1e;
+  --ink-soft:#7a6650;
+  --white:#fffdf8;
+
+  --font-logo:'Fredoka', sans-serif;
+  --font-script:'Caveat', cursive;
+  --font-body:'Poppins', sans-serif;
+
+  --radius-lg:28px;
+  --radius-md:18px;
+  --radius-sm:12px;
+  --shadow-soft:0 10px 24px rgba(61,42,28,0.14);
+  --shadow-card:0 4px 14px rgba(61,42,28,0.10);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font-body);
+  background:var(--cream-bg);
+  min-height:100vh;
+  min-height:100dvh;
+  color:var(--ink);
+}
+
+/* ============ Page chrome ============ */
+.stage{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  width:100%;
+  max-width:520px;
+  margin:0 auto;
+}
+.stage-heading{
+  display:none; /* prototype intro text hidden — this is now the real site opened on phone */
+}
+
+/* ============ Screen container (was phone frame) ============ */
+.phone{
+  position:relative;
+  width:100%;
+}
+.phone-screen{
+  position:relative;
+  width:100%;
+  min-height:100vh;
+  min-height:100dvh;
+  background:url('assets/background.png') center/cover no-repeat;
+  overflow:hidden;
+}
+
+/* ============ Screens ============ */
+.screen{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  opacity:0;
+  pointer-events:none;
+  transform:translateX(14px);
+  transition:opacity .28s ease, transform .28s ease;
+  min-height:100vh;
+  min-height:100dvh;
+}
+.screen.active{
+  opacity:1;
+  pointer-events:auto;
+  transform:translateX(0);
+  z-index:5;
+}
+.screen-body{
+  flex:1;
+  overflow-y:auto;
+  padding:14px 20px 24px;
+  scrollbar-width:none;
+}
+.screen-body::-webkit-scrollbar{display:none;}
+
+/* ============ Header ============ */
+.app-header{
+  padding:14px 18px 12px;
+  position:relative;
+  background:linear-gradient(135deg, var(--green-pale) 0%, var(--green-light) 45%, var(--green-mid) 100%);
+  border-radius:0 0 26px 26px;
+  box-shadow:0 6px 14px rgba(79,106,58,0.18);
+}
+.app-header .header-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.icon-btn{
+  width:30px; height:30px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,0.55);
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px;
+  color:var(--brown-deep);
+  cursor:pointer;
+  flex-shrink:0;
+  transition:transform .15s ease, background .15s ease;
+}
+.icon-btn:hover{background:rgba(255,255,255,0.85); transform:scale(1.06);}
+
+.brand-pill .brand-icon{
+  width:20px;height:20px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #cfe3a6, var(--green-mid));
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px; flex-shrink:0;
+}
+.brand-pill .brand-name{
+  font-family:var(--font-logo);
+  font-weight:600;
+  font-size:14.5px;
+  color:var(--green-deep);
+  white-space:nowrap;
+}
+.brand-pill .brand-section{
+  font-family:var(--font-script);
+  font-weight:700;
+  font-size:17px;
+  color:var(--gold-deep);
+  margin-left:1px;
+}
+.title-pill{
+  flex:1;
+  background:var(--white);
+  border-radius:999px;
+  padding:9px 16px;
+  text-align:center;
+  font-family:var(--font-logo);
+  font-weight:600;
+  font-size:14px;
+  color:var(--brown-deep);
+  letter-spacing:.3px;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,0.06);
+}
+.title-pill .chev{color:var(--green-deep); margin-right:4px;}
+
+/* ============ Headings & text ============ */
+.h1-page{
+  font-weight:700; font-size:19px; text-align:center;
+  color:var(--brown-deep); margin:18px 0 16px;
+  line-height:1.35;
+}
+.h2-section{
+  font-weight:700; font-size:15px; color:var(--brown-deep);
+  text-decoration:underline; text-underline-offset:4px;
+  text-decoration-color:var(--cream-line);
+  margin:4px 0 14px; text-align:center;
+}
+.muted{color:var(--ink-soft); font-size:12.5px; line-height:1.6;}
+
+/* ============ Mood grid (Home) ============ */
+.mood-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px 10px;
+  margin-bottom:20px;
+}
+.mood-item{
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  background:none; border:none; cursor:pointer; font-family:var(--font-body);
+}
+.mood-face{
+  width:64px; height:64px;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s ease, filter .15s ease;
+  border-radius:50%;
+  border:2.5px solid transparent;
+}
+.mood-face img{
+  width:100%; height:100%;
+  object-fit:contain;
+  filter:drop-shadow(0 4px 8px rgba(61,42,28,0.18));
+}
+.mood-item:hover .mood-face{transform:translateY(-3px);}
+.mood-item.selected .mood-face{border-color:var(--gold-deep); transform:scale(1.08); background:rgba(255,255,255,0.35);}
+.mood-item span.label{font-size:12px; font-weight:600; color:var(--brown-warm);}
+
+.reminder-card{
+  background:var(--cream-card);
+  border:1.5px solid var(--cream-line);
+  border-radius:var(--radius-md);
+  padding:14px 16px 16px;
+  box-shadow:var(--shadow-card);
+}
+.reminder-title{
+  display:flex; align-items:center; gap:8px;
+  font-weight:700; font-size:14.5px; color:var(--brown-deep);
+  margin-bottom:10px;
+}
+.reminder-title .bell{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--green-pale);
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+}
+.reminder-body{
+  background:linear-gradient(135deg, var(--green-mid), var(--green-deep));
+  border-radius:var(--radius-sm);
+  padding:14px 16px;
+  color:#f4f0e2;
+  font-size:14.5px;
+  line-height:1.7;
+  display:flex; align-items:center; gap:10px;
+  justify-content:space-between;
+}
+.reminder-body .sprout{font-size:26px; flex-shrink:0;}
+
+/* ============ Cards list (Activity hub) ============ */
+.option-card{
+  background:var(--cream-card);
+  border:1.5px solid var(--cream-line);
+  border-radius:var(--radius-md);
+  padding:14px 16px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-bottom:14px;
+  cursor:pointer;
+  box-shadow:var(--shadow-card);
+  transition:transform .15s ease, box-shadow .15s ease;
+  text-align:left;
+  width:100%;
+  font-family:var(--font-body);
+}
+.option-card:hover{transform:translateY(-2px); box-shadow:0 10px 20px rgba(61,42,28,0.14);}
+.option-card .oc-text h3{
+  margin:0 0 4px; font-size:14.5px; font-weight:700; color:var(--brown-deep);
+}
+.option-card .oc-text p{margin:0; font-size:11.5px; color:var(--ink-soft); line-height:1.5;}
+.option-card .oc-media{
+  width:60px;height:60px; flex-shrink:0;
+  display:flex;align-items:center;justify-content:center; overflow:hidden;
+  background:none;
+}
+.option-card .oc-media img{width:100%; height:100%; object-fit:contain;}
+.option-card .oc-arrow{
+  font-size:14px; color:var(--green-deep); flex-shrink:0;
+}
+
+.pill-btn{
+  display:inline-flex; align-items:center; gap:6px;
+  background:linear-gradient(135deg, var(--green-mid), var(--green-deep));
+  color:#fff; border:none; border-radius:999px;
+  padding:10px 22px; font-weight:600; font-size:13px;
+  font-family:var(--font-body);
+  cursor:pointer; box-shadow:var(--shadow-card);
+  transition:transform .15s ease, filter .15s ease;
+}
+.pill-btn:hover{transform:translateY(-2px); filter:brightness(1.05);}
+.pill-btn.ghost{
+  background:var(--white); color:var(--brown-deep);
+  border:1.5px solid var(--cream-line);
+}
+.pill-btn.small{padding:7px 16px; font-size:12px;}
+.pill-btn img.btn-icon{width:18px;height:18px;object-fit:contain;}
+.center-row{display:flex; justify-content:center; margin:6px 0 4px;}
+
+/* ============ HealCoin ============ */
+.coin-hero{
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  margin:6px 0 22px;
+}
+.coin-hero img{width:64px; height:64px; object-fit:contain;}
+.coin-hero .amount{font-size:34px; font-weight:700; color:var(--green-deep); font-family:var(--font-logo);}
+.coin-hero .unit{font-size:13px; color:var(--ink-soft); margin-top:-4px;}
+.coin-badge{
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--cream-card); border:1.5px solid var(--cream-line);
+  border-radius:999px; padding:6px 14px 6px 6px;
+}
+.coin-badge img{width:30px;height:30px; object-fit:contain;}
+.coin-badge b{font-size:16px; color:var(--brown-deep);}
+.coin-badge small{display:block; font-size:10px; color:var(--ink-soft); margin-top:-2px;}
+
+.history-item{
+  display:flex; align-items:center; gap:12px;
+  padding:12px 4px;
+  border-bottom:1px solid var(--cream-line);
+}
+.history-item:last-child{border-bottom:none;}
+.history-item .hi-icon{
+  width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center; flex-shrink:0; overflow:hidden;
+}
+.history-item .hi-icon img{width:100%; height:100%; object-fit:contain;}
+.history-item .hi-text{flex:1;}
+.history-item .hi-text h4{margin:0 0 2px; font-size:13px; font-weight:700; color:var(--brown-deep);}
+.history-item .hi-text span{font-size:11px; color:var(--ink-soft);}
+.history-item .hi-amount{font-weight:700; color:var(--gold-deep); font-size:13.5px;}
+
+.list-card{
+  background:var(--cream-card); border:1.5px solid var(--cream-line);
+  border-radius:var(--radius-md); padding:4px 14px; margin-bottom:16px;
+}
+
+/* ============ Tabs ============ */
+.tab-row{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;}
+.tab-btn{
+  flex:1; min-width:90px;
+  background:var(--cream-card); border:1.5px solid var(--cream-line);
+  border-radius:999px; padding:8px 10px; font-size:12px; font-weight:600;
+  color:var(--brown-warm); cursor:pointer; text-align:center; font-family:var(--font-body);
+  transition:all .15s ease;
+}
+.tab-btn.active{
+  background:linear-gradient(135deg, var(--green-mid), var(--green-deep));
+  color:#fff; border-color:transparent;
+}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ============ Voucher / redeem cards ============ */
+.redeem-card{
+  background:var(--cream-card); border:1.5px solid var(--cream-line);
+  border-radius:var(--radius-md); padding:12px 14px;
+  display:flex; align-items:center; gap:12px; margin-bottom:14px;
+  box-shadow:var(--shadow-card);
+}
+.redeem-card .rc-icon{
+  width:52px;height:52px;border-radius:50%;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; overflow:hidden;
+}
+.redeem-card .rc-icon img{width:100%; height:100%; object-fit:contain;}
+.redeem-card .rc-text{flex:1;}
+.redeem-card .rc-text h4{margin:0 0 3px; font-size:13.5px; font-weight:700; color:var(--brown-deep);}
+.redeem-card .rc-text span{font-size:11px; color:var(--ink-soft); display:block;}
+.redeem-btn{
+  background:linear-gradient(135deg, var(--green-mid), var(--green-deep));
+  color:#fff; border:none; border-radius:999px; padding:7px 16px;
+  font-size:11.5px; font-weight:600; cursor:pointer; flex-shrink:0; font-family:var(--font-body);
+}
+
+/* ============ Psychologist list ============ */
+.psych-card{
+  display:flex; align-items:center; gap:12px; padding:14px 4px;
+  border-bottom:1px solid var(--cream-line); cursor:pointer;
+}
+.psych-card:last-child{border-bottom:none;}
+.psych-avatar{
+  width:52px;height:52px;border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; font-size:22px;
+  box-shadow:var(--shadow-card);
+  overflow:hidden;
+}
+.psych-avatar img{width:100%; height:100%; object-fit:cover;}
+.psych-info{flex:1;}
+.psych-info h4{margin:0 0 2px; font-size:13.5px; font-weight:700; color:var(--brown-deep);}
+.psych-info p{margin:0 0 3px; font-size:11px; color:var(--ink-soft); line-height:1.4;}
+.psych-info .rating{font-size:11.5px; color:var(--gold-deep); font-weight:600;}
+.chev-right{color:var(--brown-warm); font-size:14px;}
+
+/* ============ Session details ============ */
+.session-top{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
+.session-top .avatar-lg{width:60px;height:60px;border-radius:50%; flex-shrink:0; box-shadow:var(--shadow-card); overflow:hidden;}
+.session-top .avatar-lg img{width:100%;height:100%;object-fit:cover;}
+.session-top h4{margin:0 0 3px; font-size:15px; color:var(--brown-deep);}
+.session-top span{font-size:12px; color:var(--gold-deep); font-weight:600;}
+.schedule-card{
+  background:var(--cream-card); border:1.5px solid var(--cream-line);
+  border-radius:var(--radius-md); padding:16px; margin-bottom:16px;
+}
+.date-row{display:flex; gap:8px; margin-bottom:12px;}
+.date-chip{
+  flex:1; text-align:center; padding:7px 4px; border-radius:10px;
+  border:1.5px solid var(--cream-line); font-size:11px; font-weight:600;
+  color:var(--brown-warm); cursor:pointer; background:var(--white);
+}
+.date-chip.active{background:var(--brown-mid); color:#fff; border-color:var(--brown-mid);}
+.time-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px;}
+.time-chip{
+  text-align:center; padding:9px 4px; border-radius:10px; font-size:12.5px; font-weight:600;
+  background:var(--green-mid); color:#fff; cursor:pointer; border:none; font-family:var(--font-body);
+}
+.time-chip.active{background:var(--brown-deep);}
+.selected-slot{
+  background:linear-gradient(135deg, var(--green-light), var(--green-mid));
+  border-radius:999px; padding:9px 16px; display:flex; justify-content:space-between;
+  font-size:12px; font-weight:700; color:#fff;
+}
+.book-row{display:flex; align-items:center; justify-content:space-between; margin-top:8px;}
+.book-row .coin-mini{display:flex; align-items:center; gap:6px; font-weight:700; color:var(--brown-deep); font-size:15px;}
+.book-row .coin-mini img{width:22px;height:22px; object-fit:contain;}
+
+/* ============ Journal ============ */
+.field-block{margin-bottom:16px;}
+.field-block label{
+  display:block; font-size:12.5px; font-weight:700; color:var(--brown-deep);
+  text-decoration:underline; text-decoration-color:var(--cream-line); text-underline-offset:3px;
+  margin-bottom:8px;
+}
+.field-box{
+  background:var(--cream-card); border:1.5px solid var(--brown-warm);
+  border-radius:16px; padding:10px 14px;
+}
+.field-line{
+  display:flex; gap:6px; align-items:baseline; padding:6px 0;
+  border-bottom:1px dashed var(--cream-line); font-size:12px;
+}
+.field-line:last-child{border-bottom:none;}
+.field-line input{
+  flex:1; border:none; background:transparent; font-family:var(--font-body);
+  font-size:12.5px; color:var(--ink); outline:none; padding:2px 0;
+}
+.field-box textarea{
+  width:100%; border:none; background:transparent; resize:none; font-family:var(--font-body);
+  font-size:12.5px; outline:none; min-height:40px; color:var(--ink);
+}
+
+/* ============ Podcast ============ */
+.podcast-panel{
+  background:linear-gradient(160deg, var(--green-light) 0%, var(--green-deep) 100%);
+  border-radius:var(--radius-md); padding:14px; margin-top:6px;
+}
+.ep-filter{
+  display:flex; align-items:center; gap:10px; margin:4px 4px 14px;
+  font-size:12px; color:var(--brown-deep); font-weight:600;
+}
+.ep-filter .chip{
+  background:var(--white); border-radius:999px; padding:6px 14px; font-size:11.5px;
+}
+.ep-card{
+  display:flex; gap:10px; background:rgba(255,253,248,0.9); border-radius:14px;
+  padding:8px; margin-bottom:10px; align-items:flex-start; cursor:pointer;
+  transition:transform .15s ease;
+}
+.ep-card:hover{transform:translateY(-2px);}
+.ep-card img{width:64px;height:64px; border-radius:10px; object-fit:cover; flex-shrink:0;}
+.ep-card .ep-text{flex:1;}
+.ep-card .ep-text h5{margin:0 0 3px; font-size:12px; font-weight:700; color:var(--brown-deep); line-height:1.3;}
+.ep-card .ep-text p{margin:0 0 5px; font-size:10px; color:var(--ink-soft); line-height:1.4;}
+.ep-card .ep-meta{display:flex; align-items:center; gap:6px; font-size:10.5px; color:var(--brown-warm); font-weight:600;}
+.ep-play{
+  width:20px;height:20px;border-radius:50%; background:var(--brown-deep); color:#fff;
+  display:flex;align-items:center;justify-content:center; font-size:9px; border:none; cursor:pointer;
+}
+.ep-play.playing{background:var(--gold-deep);}
+
+/* ============ Community: plan together ============ */
+.duo-row{display:flex; justify-content:center; align-items:center; gap:18px; margin:8px 0 16px;}
+.duo-avatar{display:flex; flex-direction:column; align-items:center; gap:6px;}
+.duo-avatar img{width:64px;height:64px;border-radius:50%; box-shadow:var(--shadow-card); object-fit:cover;}
+.duo-avatar span{font-size:12px; font-weight:600; color:var(--brown-deep);}
+.duo-plus{font-size:20px; color:var(--brown-warm); font-weight:700;}
+.tree-visual{text-align:center; margin:10px 0 4px; line-height:1;}
+.tree-visual img{width:110px; height:110px; object-fit:contain;}
+.grow-caption{text-align:center; font-size:13px; color:var(--brown-deep); font-weight:600; margin-bottom:16px; line-height:1.5;}
+.progress-row{display:flex; justify-content:space-between; font-size:11.5px; font-weight:600; color:var(--brown-warm); margin-bottom:6px;}
+.progress-track{
+  width:100%; height:9px; background:var(--white); border-radius:999px; overflow:hidden;
+  border:1px solid var(--cream-line); margin-bottom:18px;
+}
+.progress-fill{height:100%; background:linear-gradient(90deg, var(--green-mid), var(--green-deep)); border-radius:999px;}
+
+.target-card{
+  background:var(--cream-card); border:1.5px solid var(--cream-line); border-radius:var(--radius-md);
+  padding:14px 16px; margin-bottom:16px;
+}
+.target-card h4{margin:0 0 8px; font-size:13.5px; color:var(--brown-deep); display:flex; align-items:center; gap:6px;}
+.target-card h4 img{width:20px;height:20px;object-fit:contain;}
+.target-nums{display:flex; justify-content:space-between; font-size:11px; color:var(--ink-soft); margin-top:6px;}
+.forest-photo{width:100%; border-radius:var(--radius-md); margin-bottom:16px; box-shadow:var(--shadow-card); display:block; object-fit:cover; max-height:260px;}
+.members-card{
+  background:linear-gradient(135deg, var(--green-light), var(--green-mid));
+  border-radius:var(--radius-md); padding:14px 16px;
+}
+.members-card h4{margin:0 0 10px; font-size:13px; color:#fff; text-decoration:underline; text-underline-offset:3px;}
+.avatar-stack{display:flex; align-items:center;}
+.avatar-stack .av{
+  width:34px;height:34px;border-radius:50%; border:2px solid #fff; margin-left:-10px;
+  display:flex;align-items:center;justify-content:center;font-size:14px; box-shadow:var(--shadow-card);
+}
+.avatar-stack .av:first-child{margin-left:0;}
+.avatar-stack .more{
+  background:var(--brown-deep); color:#fff; font-size:11px; font-weight:700;
+}
+
+/* ============ Forest main ============ */
+.forest-hero{position:relative; margin:4px 0 14px;}
+.forest-hero img{width:100%; border-radius:var(--radius-md); box-shadow:var(--shadow-card); display:block; max-height:340px; object-fit:cover;}
+.coin-float{
+  position:absolute; top:12px; left:12px;
+  background:var(--cream-card); border:1.5px solid var(--cream-line);
+  border-radius:999px; padding:6px 12px; display:flex; align-items:center; gap:6px;
+  font-weight:700; font-size:13px; color:var(--brown-deep);
+}
+.coin-float img{width:20px;height:20px; object-fit:contain;}
+.growth-card{
+  background:var(--cream-card); border:1.5px solid var(--cream-line); border-radius:var(--radius-md);
+  padding:14px 16px; margin-bottom:16px;
+}
+.growth-card h4{margin:0 0 4px; font-size:13.5px; color:var(--brown-deep); display:flex; align-items:center; gap:6px;}
+.growth-level{display:flex; justify-content:space-between; font-size:12px; color:var(--brown-warm); font-weight:600; margin:8px 0 6px;gap:250px;}
+.two-btn-row{display:flex; gap:10px;}
+.two-btn-row .pill-btn{flex:1; justify-content:center; text-align:center;}
+
+/* ============ Market ============ */
+.chip-row{display:flex; gap:8px; margin-bottom:16px; overflow-x:auto; padding-bottom:2px;}
+.chip-row .tab-btn{flex:none; padding:8px 14px;}
+.market-item{
+  display:flex; align-items:center; gap:12px; background:var(--cream-card);
+  border:1.5px solid var(--cream-line); border-radius:var(--radius-md); padding:10px 14px;
+  margin-bottom:12px; cursor:pointer; transition:transform .15s ease;
+}
+.market-item:hover{transform:translateY(-2px);}
+.market-item img{width:44px;height:44px; object-fit:contain;}
+.market-item h4{flex:1; margin:0; font-size:13.5px; color:var(--brown-deep); font-weight:700;}
+.market-item .price{display:flex; align-items:center; gap:5px; font-weight:700; color:var(--gold-deep); font-size:13px;}
+.market-item .price img{width:18px;height:18px; object-fit:contain;}
+
+/* ============ Item detail ============ */
+.item-hero{text-align:center; margin:6px 0 18px;}
+.item-hero img{width:170px; height:170px; object-fit:contain; filter:drop-shadow(0 10px 14px rgba(61,42,28,0.2));}
+.item-hero h3{margin:6px 0 8px; font-size:18px; color:var(--brown-deep); text-decoration:underline; text-underline-offset:4px; text-decoration-color:var(--cream-line);}
+.item-hero p{max-width:260px; margin:0 auto 18px; font-size:12.5px; color:var(--ink-soft); line-height:1.7;}
+.item-price{display:flex; align-items:center; justify-content:center; gap:8px; font-size:20px; font-weight:700; color:var(--brown-deep); margin-bottom:14px;}
+.item-price img{width:26px;height:26px; object-fit:contain;}
+
+/* ============ Confirmation ============ */
+.confirm-wrap{position:relative; flex:1; display:flex; flex-direction:column;}
+.confirm-msg{
+  position:absolute; left:20px; right:20px; bottom:22px;
+  background:var(--cream-card); border:1.5px solid var(--cream-line); border-radius:var(--radius-md);
+  padding:18px 20px; font-size:14px; font-weight:600; color:var(--brown-deep); text-align:center; line-height:1.6;
+  box-shadow:var(--shadow-soft);
+}
+
+/* ============ Mission ============ */
+.mission-item{
+  display:flex; align-items:center; gap:12px; padding:14px 4px;
+  border-bottom:1px solid var(--cream-line);
+}
+.mission-item:last-child{border-bottom:none;}
+.mission-icon{
+  width:48px;height:48px;border-radius:50%; flex-shrink:0;
+  display:flex;align-items:center;justify-content:center; overflow:hidden;
+}
+.mission-icon img{width:100%; height:100%; object-fit:contain;}
+.mission-text{flex:1;}
+.mission-text h4{margin:0 0 6px; font-size:12.5px; font-weight:700; color:var(--brown-deep);}
+.mission-bar{width:100%; height:6px; background:var(--white); border-radius:999px; overflow:hidden; border:1px solid var(--cream-line);}
+.mission-bar span{display:block; height:100%; background:linear-gradient(90deg, var(--green-mid), var(--green-deep));}
+.mission-reward{display:flex; align-items:center; gap:4px; font-weight:700; color:var(--gold-deep); font-size:13px; flex-shrink:0;}
+.mission-reward img{width:16px;height:16px;object-fit:contain;}
+.bonus-card{
+  margin-top:16px; background:linear-gradient(135deg,#f6d98a,#eab54a);
+  border-radius:var(--radius-md); padding:14px 16px; display:flex; align-items:center; gap:12px;
+  font-size:12.5px; font-weight:600; color:var(--brown-deep); line-height:1.6;
+}
+.bonus-card .gift{font-size:30px;}
+.bonus-card b{color:#b5471f;}
+
+/* ============ Chat ============ */
+.chat-layout{display:flex; flex:1; overflow:hidden;}
+.chat-sidebar{
+  width:118px; background:linear-gradient(180deg, var(--green-mid), var(--green-deep));
+  padding:12px 8px; overflow-y:auto; flex-shrink:0;
+}
+.chat-sidebar h4{color:#fff; font-size:14px; margin:2px 4px 10px; font-weight:700;}
+.chat-search{
+  background:rgba(255,255,255,0.85); border-radius:999px; padding:5px 10px; font-size:9.5px;
+  color:var(--ink-soft); margin-bottom:10px;
+}
+.chat-entry{
+  display:flex; align-items:center; gap:6px; padding:6px 6px; border-radius:10px;
+  cursor:pointer; margin-bottom:6px; transition:background .15s ease;
+}
+.chat-entry:hover, .chat-entry.active{background:rgba(255,255,255,0.18);}
+.chat-entry .ce-avatar{
+  width:26px;height:26px;border-radius:50%; flex-shrink:0; display:flex;align-items:center;justify-content:center;
+  font-size:12px; box-shadow:0 1px 3px rgba(0,0,0,0.2); overflow:hidden;
+}
+.chat-entry .ce-avatar img{width:100%;height:100%;object-fit:cover;}
+.chat-entry span{color:#fff; font-size:10.5px; font-weight:600; line-height:1.2;}
+.chat-main{flex:1; display:flex; flex-direction:column; padding:10px 14px 14px; overflow:hidden;}
+.chat-main-header{
+  display:flex; align-items:center; gap:8px; padding:6px 8px; background:var(--cream-card);
+  border-radius:999px; margin-bottom:10px; flex-shrink:0;
+}
+.chat-main-header .ce-avatar{width:26px;height:26px;border-radius:50%; display:flex;align-items:center;justify-content:center;font-size:12px; overflow:hidden;}
+.chat-main-header .ce-avatar img{width:100%;height:100%;object-fit:cover;}
+.chat-main-header b{font-size:12.5px; color:var(--brown-deep); flex:1;}
+.chat-thread{flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding:4px 2px;}
+.bubble{
+  max-width:78%; padding:9px 13px; border-radius:16px; font-size:11.5px; line-height:1.5;
+}
+.bubble.in{align-self:flex-start; background:#e4e4e4; color:var(--ink); border-bottom-left-radius:4px;}
+.bubble.out{align-self:flex-end; background:var(--brown-deep); color:#fff; border-bottom-right-radius:4px;}
+.bubble.out.alt{background:var(--green-mid);}
+.chat-input{
+  display:flex; align-items:center; gap:8px; margin-top:10px; background:var(--white);
+  border:1.5px solid var(--cream-line); border-radius:999px; padding:8px 12px; flex-shrink:0;
+}
+.chat-input input{flex:1; border:none; outline:none; background:transparent; font-family:var(--font-body); font-size:11.5px;}
+.chat-input .icon-btn{background:var(--cream-card);}
+
+/* ============ Profile ============ */
+.profile-hero{display:flex; flex-direction:column; align-items:center; gap:8px; margin:10px 0 22px;}
+.profile-hero .pf-avatar{
+  width:78px;height:78px;border-radius:50%; background:linear-gradient(135deg, var(--green-light), var(--green-deep));
+  display:flex; align-items:center; justify-content:center; font-size:34px; box-shadow:var(--shadow-card);
+  overflow:hidden;
+}
+.profile-hero .pf-avatar img{width:100%;height:100%;object-fit:cover;}
+.profile-hero h3{margin:2px 0 0; font-size:16px; color:var(--brown-deep);}
+.profile-hero span{font-size:12px; color:var(--ink-soft);}
+.profile-list{background:var(--cream-card); border:1.5px solid var(--cream-line); border-radius:var(--radius-md); overflow:hidden;}
+.profile-row{
+  display:flex; align-items:center; gap:12px; padding:13px 16px; border-bottom:1px solid var(--cream-line);
+  cursor:pointer; font-size:13px; color:var(--brown-deep); font-weight:600;
+}
+.profile-row:last-child{border-bottom:none;}
+.profile-row .pr-icon{width:20px; text-align:center; color:var(--green-deep);}
+.profile-row .chev-right{margin-left:auto;}
+
+/* ============ Bottom nav ============ */
+.bottom-nav{
+  display:flex; justify-content:space-around; align-items:center;
+  background:linear-gradient(180deg, var(--brown-mid), var(--brown-deep));
+  padding:10px 4px 12px; flex-shrink:0;
+  border-radius:25px 25px 0 0; box-shadow:0 -4px 12px rgba(0,0,0,0.2);
+}
+.nav-item{
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  background:none; border:none; color:#cbb89a; cursor:pointer; font-family:var(--font-body);
+  padding:2px 4px; flex:1;
+}
+.nav-item span{font-size:9px; font-weight:600; line-height:1.2; text-align:center;}
+.nav-item .nav-icon{font-size:16px;}
+.nav-item.active{color:#fff;}
+.nav-item.active .nav-icon{filter:drop-shadow(0 0 6px rgba(255,255,255,0.5));}
+
+/* ============ Sub-header nav buttons ============ */
+.subnav-row{display:flex; justify-content:space-between; gap:10px; margin-top:auto; padding-top:14px;}
+
+/* ============ Side menu ============ */
+.menu-overlay{
+  position:fixed; inset:0; background:rgba(20,14,9,0.45);
+  opacity:0; pointer-events:none; transition:opacity .25s ease; z-index:40;
+}
+.menu-overlay.open{opacity:1; pointer-events:auto;}
+.side-menu{
+  position:fixed; top:0; right:0; bottom:0; width:76%; max-width:320px;
+  background:var(--cream-bg); box-shadow:-8px 0 24px rgba(0,0,0,0.2);
+  transform:translateX(100%); transition:transform .28s ease;
+  padding:26px 18px; overflow-y:auto;
+}
+.menu-overlay.open .side-menu{transform:translateX(0);}
+.side-menu h4{
+  font-family:var(--font-logo); color:var(--green-deep); font-size:17px; margin:0 0 4px;
+}
+.side-menu .side-sub{font-size:11px; color:var(--ink-soft); margin-bottom:16px;}
+.menu-link{
+  display:flex; align-items:center; gap:10px; padding:11px 10px; border-radius:12px;
+  font-size:12.5px; font-weight:600; color:var(--brown-deep); cursor:pointer; margin-bottom:2px;
+}
+.menu-link:hover{background:var(--cream-card);}
+.menu-link .mi{width:20px; text-align:center;}
+.menu-close{
+  position:absolute; top:18px; right:18px; width:30px;height:30px;border-radius:50%;
+  border:none; background:var(--cream-card); cursor:pointer; font-size:14px; color:var(--brown-deep);
+}
+.menu-group-label{font-size:10.5px; text-transform:uppercase; letter-spacing:.6px; color:var(--brown-warm); margin:16px 4px 4px;}
+
+/* ============ Toast ============ */
+.toast{
+  position:fixed; left:50%; bottom:90px; transform:translate(-50%,10px);
+  background:var(--brown-deep); color:#fff; padding:11px 20px; border-radius:999px;
+  font-size:12px; font-weight:600; opacity:0; pointer-events:none; transition:all .25s ease; z-index:60;
+  white-space:nowrap; box-shadow:var(--shadow-soft);
+}
+.toast.show{opacity:1; transform:translate(-50%,0);}
+
+/* ============ Footer credit ============ */
+.credit{display:none;}
+/* ================= SIDEBAR ================= */
+#sidebar {
+  position: fixed;
+  top: 0;
+  left: -320px;
+  width: 320px;
+  height: 100vh;
+  background-color: #fff7fa;   /* cukup ini */
+  box-shadow: 3px 0 15px rgba(0,0,0,0.2);
+  transition: left 0.3s ease, background-color 0.3s ease;
+  z-index: 9999;
+  overflow-y: auto;
+  padding-bottom: 50px;
+}
+
+#sidebar.dark {
+  background-color: #000;
+  color: #fff;
+}
+
+#sidebar.dark img {
+  filter: invert(1) brightness(2);
+}
+
+#sidebar.dark .close-btn {
+  color: #fff;
+}
+
+#sidebar.dark .profile h3 {
+  color: #ffffff;
+}
+
+#sidebar.dark .profile p {
+  color: #dddddd;
+}
+
+#sidebar.dark .profile img {
+  filter: invert(0);
+}
+
+/* Sidebar aktif */
+#sidebar.active {
+  left: 0;
+}
+
+/* Tombol close */
+.close-btn {
+  font-size: 26px;
+  text-align: right;
+  padding: 12px 18px;
+  cursor: pointer;
+  color: #000000;
+}
+
+/* ================= PROFILE ================= */
+.profile {
+  text-align: left;
+  padding: 10px 20px 20px;
+  display: flex;
+  gap: 10px;
+
+}
+
+.bagi2 {
+  transform: translateY(15px);
+}
+
+.profile img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+.profile h3 {
+  font-size: 16px;
+  color: #000000;
+  margin-bottom: 2px;
+  
+}
+
+.profile p {
+  font-size: 12px;
+  color: #777;
+}
+
+/* ================= DIVIDER ================= */
+#sidebar hr {
+  border: none;
+  border-top: 1px solid #00000081;
+  margin: 10px 20px;
+}
+
+/* ================= MENU SECTION ================= */
+.menu-section {
+  padding: 8px 20px;
+  margin-right: 0px;
+}
+
+.menu-section h4 {
+    display: block;
+    width: 180px;
+    background: #ffffff;
+    padding: 8px 12px;
+    border-radius: 0 12px 12px 0;
+ margin-left: -20px;
+}
+
+/* Link menu */
+.menu-section a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-size: 14px;
+  color: #000000;
+  padding: 4px;
+  border-radius: 8px;
+  transition: 0.25s;
+}
+
+.menu-section a img {
+  width: auto;        /* otomatis menyesuaikan lebar a */
+  height: 30px;       /* proporsional */
+  display: block;     /* hilangkan spasi bawah */
+}
+
+/* Hover menu */
+.menu-section a:hover {
+  background: #7c9757;
+  transform: translateX(4px);
+}
+
+/* Logout khusus */
+.menu-section a:last-child {
+  color: #000000;
+}
+
+/* ================= GAMBAR ATAS ================= */
+.gambar-atas{
+    width: 100%;                  /* lebar container gambar */
+    overflow: hidden;
+    line-height: 0;              /* hilangkan jarak bawah gambar */
+}
+
+.gambar-atas img{
+    width: 100%;                 /* penuh selebar layar */
+    height: auto;                /* tinggi mengikuti proporsi */
+    display: block;              /* hilangkan spasi bawaan img */
+    object-fit: contain;         /* seluruh gambar terlihat */
+    object-position: top center; /* posisi di tengah atas */
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="stage-heading">
+    <span class="eyebrow">tumbuh, sedikit demi sedikit</span>
+    <h1>HeaLink-</h1>
+    <p>Prototipe interaktif aplikasi kesehatan mental. Klik kartu, tombol, dan ikon menu (☰) untuk menjelajahi semua 16 layar.</p>
+  </div>
+
+  <div class="phone-screen" id="phoneScreen">
+
+      <!-- ============ HOME ============ -->
+      <section class="screen active" data-screen="home">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn" title="Cari">🔍</button>
+            <div class="brand-pill">
+             <img class="gambar-atas" src="assets/Email (19).png" alt="Gambar">
+            </div>
+            <button class="icon-btn" onclick="toggleMenu(true)" title="Menu">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <h2 class="h1-page">How are you<br>feeling today?</h2>
+          <div class="mood-grid">
+            <button class="mood-item mood-happy" onclick="pickMood(this,'Happy','Senang mendengarnya! 🌞')"><span class="mood-face"><img src="assets/mood-happy.png" alt="Happy"></span></button>
+            <button class="mood-item mood-calm" onclick="pickMood(this,'Calm','Nikmati ketenanganmu 🍃')"><span class="mood-face"><img src="assets/mood-calm.png" alt="Calm"></span></button>
+            <button class="mood-item mood-anxious" onclick="pickMood(this,'Anxious','Tarik napas pelan-pelan ya 💛')"><span class="mood-face"><img src="assets/mood-anxious.png" alt="Anxious"></span></button>
+            <button class="mood-item mood-angry" onclick="pickMood(this,'Angry','Nggak apa-apa merasa kesal 🔥')"><span class="mood-face"><img src="assets/mood-angry.png" alt="Angry"></span></button>
+            <button class="mood-item mood-sad" onclick="pickMood(this,'Sad','Kamu boleh sedih hari ini 💧')"><span class="mood-face"><img src="assets/mood-sad.png" alt="Sad"></span></button>
+            <button class="mood-item mood-lonely" onclick="pickMood(this,'Lonely','Kamu nggak sendirian di sini 🤍')"><span class="mood-face"><img src="assets/mood-lonely.png" alt="Lonely"></span></button>
+          </div>
+          <div class="reminder-card">
+            <div class="reminder-title"><span class="bell">🔔</span> Today's Reminder!</div>
+            <div class="reminder-body">
+              <span>Ngga apa-apa kok merasa seperti ini. Terkadang, memang ada hari-hari ketika kita tidak bisa merasa baik-baik saja, dan itu adalah hal yang wajar.</span>
+              <span class="sprout">🌱</span>
+            </div>
+          </div>
+        </div>
+        <nav class="bottom-nav">
+          <button class="nav-item active" onclick="goTo('home')"><span class="nav-icon">🏠</span><span>HeaLink-<br>Home</span></button>
+          <button class="nav-item" onclick="goTo('activity-hub')"><span class="nav-icon">🍃</span><span>HeaLink-<br>Activity</span></button>
+          <button class="nav-item" onclick="goTo('forest')"><span class="nav-icon">🌲</span><span>HeaLink-<br>Forest</span></button>
+          <button class="nav-item" onclick="goTo('chat')"><span class="nav-icon">👥</span><span>HeaLink-<br>Community</span></button>
+          <button class="nav-item" onclick="goTo('profile')"><span class="nav-icon">👤</span><span>Profile</span></button>
+        </nav>
+      </section>
+
+      <!-- ============ ACTIVITY HUB ============ -->
+      <section class="screen" data-screen="activity-hub">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn">🔍</button>
+            <div class="brand-pill">
+              <img class="gambar-atas" src="assets/Email (24).png" alt="Gambar">
+            </div>
+            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <h2 class="h1-page">Choose your next step:</h2>
+          <button class="option-card" onclick="goTo('journal')">
+            <div class="oc-text"><h3>Journaling</h3><p>Express your feelings through guided journaling to build emotional awareness.</p></div>
+            <div class="oc-media"><img src="assets/icon-journal-flat.png" alt=""></div>
+          </button>
+          <button class="option-card" onclick="goTo('podcast')">
+            <div class="oc-text"><h3>Podcast/Audio Companion</h3><p>Feel accompanied through soothing audio sessions that guide and support your wellbeing.</p></div>
+            <div class="oc-media"><img src="assets/icon-headphones-flat.png" alt=""></div>
+          </button>
+          <button class="option-card" onclick="goTo('community-tabs')">
+            <div class="oc-text"><h3>Community Activity</h3><p>Connect with people through collaborative activities that encourage belonging and emotional support.</p></div>
+            <div class="oc-media"><img src="assets/icon-community-flat.png" alt=""></div>
+          </button>
+          <div class="center-row">
+            <button class="pill-btn" onclick="goTo('healcoin')"><img class="btn-icon" src="assets/icon-coin.png" alt="">HealCoin</button>
+          </div>
+        </div>
+        <nav class="bottom-nav">
+          <button class="nav-item" onclick="goTo('home')"><span class="nav-icon">🏠</span><span>HeaLink-<br>Home</span></button>
+          <button class="nav-item active" onclick="goTo('activity-hub')"><span class="nav-icon">🍃</span><span>HeaLink-<br>Activity</span></button>
+          <button class="nav-item" onclick="goTo('forest')"><span class="nav-icon">🌲</span><span>HeaLink-<br>Forest</span></button>
+          <button class="nav-item" onclick="goTo('chat')"><span class="nav-icon">👥</span><span>HeaLink-<br>Community</span></button>
+          <button class="nav-item" onclick="goTo('profile')"><span class="nav-icon">👤</span><span>Profile</span></button>
+        </nav>
+      </section>
+
+      <!-- ============ HEALCOIN ============ -->
+      <section class="screen" data-screen="healcoin">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn">🔍</button>
+            <div class="brand-pill">
+              <img class="gambar-atas" src="assets/Email (24).png" alt="Gambar">
+            </div>
+            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <h2 class="h2-section">Your HealCoin</h2>
+          <div class="coin-hero">
+            <img src="assets/icon-coin.png" alt="HealCoin">
+            <span class="amount">120</span>
+            <span class="unit">HealCoin</span>
+          </div>
+          <div class="muted" style="font-weight:700;color:var(--brown-deep);font-size:13px;margin-bottom:6px;">Earning History:</div>
+          <div class="list-card">
+            <div class="history-item"><span class="hi-icon"><img src="assets/icon-journal.png" alt=""></span><div class="hi-text"><h4>Journaling</h4><span>Today, 10.30 AM</span></div><span class="hi-amount">+15</span></div>
+            <div class="history-item"><span class="hi-icon"><img src="assets/icon-headphones.png" alt=""></span><div class="hi-text"><h4>Podcast/Audio Companion</h4><span>Today, 09.15 AM</span></div><span class="hi-amount">+10</span></div>
+            <div class="history-item"><span class="hi-icon"><img src="assets/icon-community.png" alt=""></span><div class="hi-text"><h4>Community Activity</h4><span>Yesterday, 08.45 PM</span></div><span class="hi-amount">+20</span></div>
+          </div>
+          <div class="center-row"><button class="pill-btn ghost" onclick="goTo('support')">⭐ Reward</button></div>
+          <div class="subnav-row">
+            <button class="pill-btn ghost small" onclick="goTo('activity-hub')">‹ Back to Activity</button>
+            <button class="pill-btn small" onclick="goTo('forest')">Next to Forest ›</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SUPPORT (vouchers) ============ -->
+      <section class="screen" data-screen="support">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn">🔍</button>
+            <div class="brand-pill">
+              <img class="gambar-atas" src="assets/Email (24).png" alt="Gambar">
+            </div>
+            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <h2 class="h2-section">Get Professional Support</h2>
+          <div class="coin-badge" style="margin-bottom:16px;"><img src="assets/icon-coin.png" alt=""><div><b>120</b><small>HealCoin</small></div></div>
+          <div class="tab-row">
+            <div class="tab-btn active" data-group="support" data-tab="vouchers" onclick="switchTab('support','vouchers')">Vouchers</div>
+            <div class="tab-btn" data-group="support" data-tab="consult" onclick="switchTab('support','consult')">Consultation</div>
+            <div class="tab-btn" data-group="support" data-tab="history" onclick="switchTab('support','history')">History</div>
+          </div>
+          <div class="tab-panel active" data-group="support" data-tab="vouchers">
+            <div class="redeem-card"><span class="rc-icon"><img src="assets/icon-voucher.png" alt=""></span><div class="rc-text"><h4>Consultation Voucher</h4><span>65 HealCoin</span></div><button class="redeem-btn" onclick="toast('Voucher ditukar!')">Redeem</button></div>
+            <div class="redeem-card"><span class="rc-icon"><img src="assets/icon-voucher.png" alt=""></span><div class="rc-text"><h4>Consultation Voucher</h4><span>100 HealCoin</span></div><button class="redeem-btn" onclick="toast('Voucher ditukar!')">Redeem</button></div>
+            <div class="redeem-card"><span class="rc-icon"><img src="assets/icon-telehealth.png" alt=""></span><div class="rc-text"><h4>Telehealth Session</h4><span>120 HealCoin · 50 mins session</span></div><button class="redeem-btn" onclick="toast('Voucher ditukar!')">Redeem</button></div>
+          </div>
+          <div class="tab-panel" data-group="support" data-tab="consult">
+            <div class="redeem-card"><span class="rc-icon"><img src="assets/icon-telehealth.png" alt=""></span><div class="rc-text"><h4>Cari Psikolog</h4><span>Pilih dari 3 psikolog tersedia</span></div><button class="redeem-btn" onclick="goTo('choose-psychologist')">Lihat</button></div>
+          </div>
+          <div class="tab-panel" data-group="support" data-tab="history">
+            <p class="muted" style="text-align:center;padding:20px 0;">Belum ada riwayat konsultasi.</p>
+          </div>
+          <div class="center-row" style="margin-top:8px;"><button class="pill-btn ghost small" onclick="goBack()">‹ Previous Page</button></div>
+        </div>
+      </section>
+
+      <!-- ============ CHOOSE PSYCHOLOGIST ============ -->
+      <section class="screen" data-screen="choose-psychologist">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn">🔍</button>
+  <img class="gambar-atas" src="assets/Email (24).png" alt="Gambar">           
+   <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <h2 class="h2-section">Choose your Psychologist</h2>
+          <div class="list-card">
+            <div class="psych-card" onclick="openSession('Shayla A, M.Psi., Psikolog','Adolescent and Anxiety Specialist','assets/avatar-you.png','4.9')">
+              <span class="psych-avatar" style="background:radial-gradient(circle at 35% 30%,#f2c6a3,#d9744a);"><img src="assets/avatar-you.png" alt=""></span>
+              <div class="psych-info"><h4>Shayla A, M.Psi., Psikolog</h4><p>Adolescent and Anxiety Specialist</p><span class="rating">⭐ 4.9</span></div>
+              <span class="chev-right">›</span>
+            </div>
+            <div class="psych-card" onclick="openSession('Adrian L, M.Psi., Psikolog','Adult and Stress Specialist','','4.9')">
+              <span class="psych-avatar" style="background:radial-gradient(circle at 35% 30%,#f4dcb1,#c99a55);">👨</span>
+              <div class="psych-info"><h4>Adrian L, M.Psi., Psikolog</h4><p>Adult and Stress Specialist</p><span class="rating">⭐ 4.9</span></div>
+              <span class="chev-right">›</span>
+            </div>
+            <div class="psych-card" onclick="openSession('Miranda P, M.Psi., Psikolog','Relationship and Self-Esteem Specialist','assets/avatar-maya.png','4.9')">
+              <span class="psych-avatar" style="background:radial-gradient(circle at 35% 30%,#aee0e8,#3e7d93);"><img src="assets/avatar-maya.png" alt=""></span>
+              <div class="psych-info"><h4>Miranda P, M.Psi., Psikolog</h4><p>Relationship and Self-Esteem Specialist</p><span class="rating">⭐ 4.9</span></div>
+              <span class="chev-right">›</span>
+            </div>
+          </div>
+          <div class="center-row"><button class="pill-btn ghost small" onclick="goBack()">‹ Previous Page</button></div>
+        </div>
+      </section>
+
+      <!-- ============ SESSION DETAILS ============ -->
+      <section class="screen" data-screen="session-details">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn" onclick="goBack()">←</button>
+            <div class="title-pill"><span class="chev">›</span>SESSION DETAILS</div>
+            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <div class="session-top">
+            <span class="avatar-lg" id="sessAvatar" style="border-radius:50%;background:radial-gradient(circle at 35% 30%,#aee0e8,#3e7d93);display:flex;align-items:center;justify-content:center;font-size:26px;"><img src="assets/avatar-maya.png" alt="" id="sessAvatarImg"></span>
+            <div><h4 id="sessName">Miranda P, M.Psi., Psikolog</h4><span id="sessTitle">⭐ 4.9 (128 Reviews)</span></div>
+          </div>
+          <div class="schedule-card">
+            <div class="h2-section" style="margin:0 0 10px;text-align:left;">Available Schedule</div>
+            <div class="date-row">
+              <div class="date-chip active" onclick="pickDate(this)">Mon, 20 July</div>
+              <div class="date-chip" onclick="pickDate(this)">Tue, 21 July</div>
+              <div class="date-chip" onclick="pickDate(this)">Wed, 22 July</div>
+            </div>
+            <div class="time-grid">
+              <button class="time-chip" onclick="pickTime(this)">10.00</button>
+              <button class="time-chip" onclick="pickTime(this)">11.00</button>
+              <button class="time-chip" onclick="pickTime(this)">12.00</button>
+              <button class="time-chip active" onclick="pickTime(this)">15.00</button>
+              <button class="time-chip" onclick="pickTime(this)">14.00</button>
+              <button class="time-chip" onclick="pickTime(this)">13.00</button>
+            </div>
+            <div class="selected-slot"><span id="slotDate">Mon, 20 July</span><span id="slotTime">15.00</span></div>
+          </div>
+          <div class="book-row">
+            <div class="coin-mini"><img src="assets/icon-coin.png" alt="">120</div>
+            <button class="pill-btn" onclick="bookSession()">Book Now</button>
+          </div>
+          <div class="center-row" style="margin-top:16px;"><button class="pill-btn ghost small" onclick="goBack()">‹ Previous Page</button></div>
+        </div>
+      </section>
+
+      <!-- ============ JOURNAL ============ -->
+      <section class="screen" data-screen="journal">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn" onclick="goBack()">←</button>
+            <div class="title-pill">📓 HEALJOURNAL</div>
+            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <div class="field-block">
+            <label>I am grateful for...</label>
+            <div class="field-box">
+              <div class="field-line">1. <input type="text" placeholder="Tulis di sini..."></div>
+              <div class="field-line">2. <input type="text" placeholder="Tulis di sini..."></div>
+              <div class="field-line">3. <input type="text" placeholder="Tulis di sini..."></div>
+            </div>
+          </div>
+          <div class="field-block">
+            <label>What would make today great?</label>
+            <div class="field-box">
+              <div class="field-line">1. <input type="text" placeholder="Tulis di sini..."></div>
+              <div class="field-line">2. <input type="text" placeholder="Tulis di sini..."></div>
+              <div class="field-line">3. <input type="text" placeholder="Tulis di sini..."></div>
+            </div>
+          </div>
+          <div class="field-block">
+            <label>Today's Affirmations: I am..</label>
+            <div class="field-box"><textarea placeholder="Tulis afirmasimu..."></textarea></div>
+          </div>
+          <div class="field-block">
+            <label>3 amazing things that happened today...</label>
+            <div class="field-box">
+              <div class="field-line">1. <input type="text" placeholder="Tulis di sini..."></div>
+              <div class="field-line">2. <input type="text" placeholder="Tulis di sini..."></div>
+              <div class="field-line">3. <input type="text" placeholder="Tulis di sini..."></div>
+            </div>
+          </div>
+          <div class="field-block">
+            <label>What could I have done to make today even better?</label>
+            <div class="field-box"><textarea placeholder="Tulis refleksimu..."></textarea></div>
+          </div>
+          <div class="center-row"><button class="pill-btn" onclick="toast('Jurnal tersimpan! +15 HealCoin 🌱')">Save</button></div>
+        </div>
+      </section>
+
+      <!-- ============ PODCAST ============ -->
+      <section class="screen" data-screen="podcast">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn" onclick="goBack()">←</button>
+            <div class="title-pill">🎧 HEALPODCAST</div>
+            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <div class="ep-filter"><span class="chip">Episodes</span><span>≡ Newest · All Episodes</span></div>
+          <div class="podcast-panel">
+            <div class="ep-card" onclick="togglePlay(this)">
+              <img src="assets/thumb-podcast1.png" alt="">
+              <div class="ep-text"><h5>Boleh Nggak, Sih, Nggak Baik-Baik Aja?</h5><p>Sebuah ruang untuk menerima emosi negatif tanpa merasa harus selalu terlihat kuat dan bahagia.</p><span class="ep-meta"><button class="ep-play">▶</button> 7 mins</span></div>
+            </div>
+            <div class="ep-card" onclick="togglePlay(this)">
+              <img src="assets/thumb-podcast2.png" alt="">
+              <div class="ep-text"><h5>Mencari Tempat untuk Pulang</h5><p>Refleksi tentang kebutuhan manusia untuk memiliki seseorang atau tempat menjadi diri sendiri.</p><span class="ep-meta"><button class="ep-play">▶</button> 8 mins</span></div>
+            </div>
+            <div class="ep-card" onclick="togglePlay(this)">
+              <img src="assets/thumb-podcast3.png" alt="">
+              <div class="ep-text"><h5>Kalau Hari Ini Berat, Istirahat Dulu</h5><p>Menemani ketika sedang merasa lelah secara emosional — beristirahat bukan berarti gagal.</p><span class="ep-meta"><button class="ep-play">▶</button> 5 mins</span></div>
+            </div>
+            <div class="ep-card" onclick="togglePlay(this)">
+              <img src="assets/thumb-podcast1.png" alt="">
+              <div class="ep-text"><h5>Aku Nggak Tahu Aku Sebenarnya Siapa</h5><p>Kebingungan mencari identitas, terutama di masa remaja dan dewasa awal.</p><span class="ep-meta"><button class="ep-play">▶</button> 7 mins</span></div>
+            </div>
+            <div class="ep-card" onclick="togglePlay(this)">
+              <img src="assets/thumb-podcast2.png" alt="">
+              <div class="ep-text"><h5>Kita Nggak Harus Bertumbuh Sendirian</h5><p>Meminta bantuan dan bertumbuh bersama orang lain adalah bagian dari proses kehidupan.</p><span class="ep-meta"><button class="ep-play">▶</button> 8 mins</span></div>
+            </div>
+          </div>
+          <div class="center-row" style="margin-top:14px;"><button class="pill-btn ghost small" onclick="goBack()">‹ Back to Activity</button></div>
+        </div>
+      </section>
+
+      <!-- ============ COMMUNITY (tabs) ============ -->
+      <section class="screen" data-screen="community-tabs">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn" onclick="goBack()">←</button>
+            <div class="title-pill">👥 COMMUNITY ACTIVITY</div>
+            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <div class="tab-row">
+            <div class="tab-btn active" data-group="comm" data-tab="plan" onclick="switchTab('comm','plan')">Plan Together</div>
+            <div class="tab-btn" data-group="comm" data-tab="circle" onclick="switchTab('comm','circle')">Circle Orang Hebat</div>
+          </div>
+          <div class="tab-panel active" data-group="comm" data-tab="plan">
+            <div class="h2-section">Plan Together:</div>
+            <div class="duo-row">
+              <div class="duo-avatar"><img src="assets/avatar-you.png" alt=""><span>You</span></div>
+              <span class="duo-plus">+</span>
+              <div class="duo-avatar"><img src="assets/avatar-maya.png" alt=""><span>Maya</span></div>
+            </div>
+            <div class="grow-caption">You're growing<br>this tree together</div>
+            <div class="tree-visual"><img src="assets/icon-seed.png" alt="Tree growing"></div>
+            <div class="progress-row"><span>Growth Progress</span><span>60%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:60%;"></div></div>
+            <div class="center-row"><button class="pill-btn" onclick="toast('Membuka pohon bersama Maya 🌳')">View Tree</button></div>
+          </div>
+          <div class="tab-panel" data-group="comm" data-tab="circle">
+            <div class="target-card">
+              <h4><img src="assets/icon-oaktree.png" alt=""> Circle Orang Hebat</h4>
+              <div class="progress-track"><div class="progress-fill" style="width:62%;"></div></div>
+              <div class="target-nums"><span>125/200 pohon</span><span>This week target</span></div>
+            </div>
+            <img class="forest-photo" src="assets/scene-forest-cluster.png" alt="Forest">
+            <div class="members-card">
+              <h4>Members Activity</h4>
+              <div class="avatar-stack">
+                <span class="av" style="background:#8ec9e0;">👩</span>
+                <span class="av" style="background:#e0b58e;">👨</span>
+                <span class="av" style="background:#e88ea3;">👩</span>
+                <span class="av" style="background:#c98e6e;">👩</span>
+                <span class="av" style="background:#f0e0c0;">👩</span>
+                <span class="av more">+45</span>
+              </div>
+            </div>
+          </div>
+          <div class="center-row" style="margin-top:14px;"><button class="pill-btn ghost small" onclick="goBack()">‹ Back to Activity</button></div>
+        </div>
+      </section>
+
+      <!-- ============ FOREST ============ -->
+      <section class="screen" data-screen="forest">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn">🔍</button>
+  <img class="gambar-atas" src="assets/Email (43).png" alt="Gambar">            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <div class="forest-hero">
+            <img src="assets/scene-forest-path.png" alt="Forest">
+            <span class="coin-float"><img src="assets/icon-coin.png" alt="">120 HealCoin</span>
+          </div>
+          <div class="growth-card">
+            <h4>🌲 Your forest is growing well...</h4>
+            <div class="growth-level"><span>Level 3</span><span>60/100</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:60%;"></div></div>
+          </div>
+          <div class="two-btn-row">
+            <button class="pill-btn ghost" onclick="goTo('market')">🏪 Market</button>
+            <button class="pill-btn ghost" onclick="goTo('mission')">🍃 Mission</button>
+          </div>
+        </div>
+        <nav class="bottom-nav">
+          <button class="nav-item" onclick="goTo('home')"><span class="nav-icon">🏠</span><span>HeaLink-<br>Home</span></button>
+          <button class="nav-item" onclick="goTo('activity-hub')"><span class="nav-icon">🍃</span><span>HeaLink-<br>Activity</span></button>
+          <button class="nav-item active" onclick="goTo('forest')"><span class="nav-icon">🌲</span><span>HeaLink-<br>Forest</span></button>
+          <button class="nav-item" onclick="goTo('chat')"><span class="nav-icon">👥</span><span>HeaLink-<br>Community</span></button>
+          <button class="nav-item" onclick="goTo('profile')"><span class="nav-icon">👤</span><span>Profile</span></button>
+        </nav>
+      </section>
+
+      <!-- ============ MARKET ============ -->
+      <section class="screen" data-screen="market">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn" onclick="goBack()">←</button>
+            <div class="title-pill">🏪 MARKET</div>
+            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <div class="coin-badge" style="margin-bottom:14px;"><img src="assets/icon-coin.png" alt=""><div><b>120</b><small>HealCoin</small></div></div>
+          <div class="chip-row">
+            <div class="tab-btn active">All Items</div>
+            <div class="tab-btn">Plants</div>
+            <div class="tab-btn">Animals</div>
+            <div class="tab-btn">Decoration</div>
+          </div>
+          <div class="market-item" onclick="openItem('Seed','A tiny seed full of promise — plant it and watch something new begin to grow.','20','assets/icon-seed.png')"><img src="assets/icon-seed.png" alt=""><h4>Seed</h4><span class="price"><img src="assets/icon-coin.png" alt="">20</span></div>
+          <div class="market-item" onclick="openItem('Oak Tree','A resilient oak that stands strong, inviting you to pause, breathe, and find peace beneath its shade.','50','assets/icon-oaktree.png')"><img src="assets/icon-oaktree.png" alt=""><h4>Oak Tree</h4><span class="price"><img src="assets/icon-coin.png" alt="">50</span></div>
+          <div class="market-item" onclick="openItem('Flowers','A cluster of wildflowers that bring color and gentle fragrance to your forest.','30','assets/icon-flowers.png')"><img src="assets/icon-flowers.png" alt=""><h4>Flowers</h4><span class="price"><img src="assets/icon-coin.png" alt="">30</span></div>
+          <div class="market-item" onclick="openItem('Butterflies','Delicate butterflies that flutter through your forest, a small reminder of transformation.','30','assets/icon-butterflies.png')"><img src="assets/icon-butterflies.png" alt=""><h4>Butterflies</h4><span class="price"><img src="assets/icon-coin.png" alt="">30</span></div>
+          <div class="market-item" onclick="openItem('Bench','A quiet wooden bench, a place to sit, rest, and simply be for a while.','60','assets/icon-bench.png')"><img src="assets/icon-bench.png" alt=""><h4>Bench</h4><span class="price"><img src="assets/icon-coin.png" alt="">60</span></div>
+        </div>
+      </section>
+
+      <!-- ============ ITEM DETAIL ============ -->
+      <section class="screen" data-screen="item-detail">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn" onclick="goBack()">←</button>
+            <div class="title-pill"><span class="chev">›</span>DETAIL ITEM</div>
+            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <div class="item-hero">
+            <img id="itemImg" src="assets/icon-oaktree.png" alt="">
+            <h3 id="itemName">Oak Tree</h3>
+            <p id="itemDesc">A resilient oak that stands strong, inviting you to pause, breathe, and find peace beneath its shade.</p>
+          </div>
+          <div class="item-price"><img src="assets/icon-coin.png" alt=""><span id="itemPrice">50</span></div>
+          <div class="center-row"><button class="pill-btn" onclick="buyItem()">Buy</button></div>
+        </div>
+      </section>
+
+      <!-- ============ FOREST CONFIRM ============ -->
+      <section class="screen" data-screen="forest-confirm">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn">🔍</button>
+  <img class="gambar-atas" src="assets/Email (43).png" alt="Gambar">            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="confirm-wrap">
+          <img src="assets/scene-forest-path.png" alt="" style="width:100%;flex:1;object-fit:cover;">
+          <div class="confirm-msg">Yeay! <span id="confirmItem">Oak tree</span> has been planted in your forest.. 🌳</div>
+        </div>
+        <div style="padding:14px 20px;"><button class="pill-btn" style="width:100%;" onclick="goTo('forest')">Back to Forest</button></div>
+      </section>
+
+      <!-- ============ MISSION ============ -->
+      <section class="screen" data-screen="mission">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn" onclick="goBack()">←</button>
+            <div class="title-pill">🍃 MISSION</div>
+            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <div class="tab-row">
+            <div class="tab-btn active" data-group="mission" data-tab="daily" onclick="switchTab('mission','daily')">Daily</div>
+            <div class="tab-btn" data-group="mission" data-tab="weekly" onclick="switchTab('mission','weekly')">Weekly</div>
+            <div class="tab-btn" data-group="mission" data-tab="annual" onclick="switchTab('mission','annual')">Annual</div>
+          </div>
+          <div class="tab-panel active list-card" data-group="mission" data-tab="daily">
+            <div class="mission-item"><span class="mission-icon"><img src="assets/icon-journal.png" alt=""></span><div class="mission-text"><h4>Write in today's journal</h4><div class="mission-bar"><span style="width:70%;"></span></div></div><span class="mission-reward"><img src="assets/icon-coin.png" alt="">+15</span></div>
+            <div class="mission-item"><span class="mission-icon"><img src="assets/icon-headphones.png" alt=""></span><div class="mission-text"><h4>Listen to Podcast</h4><div class="mission-bar"><span style="width:40%;"></span></div></div><span class="mission-reward"><img src="assets/icon-coin.png" alt="">+10</span></div>
+            <div class="mission-item"><span class="mission-icon"><img src="assets/icon-community.png" alt=""></span><div class="mission-text"><h4>Join Community Activity</h4><div class="mission-bar"><span style="width:90%;"></span></div></div><span class="mission-reward"><img src="assets/icon-coin.png" alt="">+20</span></div>
+          </div>
+          <div class="tab-panel list-card" data-group="mission" data-tab="weekly">
+            <div class="mission-item"><span class="mission-icon"><img src="assets/icon-journal.png" alt=""></span><div class="mission-text"><h4>Journal 5 hari berturut-turut</h4><div class="mission-bar"><span style="width:60%;"></span></div></div><span class="mission-reward"><img src="assets/icon-coin.png" alt="">+50</span></div>
+            <div class="mission-item"><span class="mission-icon"><img src="assets/icon-headphones.png" alt=""></span><div class="mission-text"><h4>Dengarkan 3 episode podcast</h4><div class="mission-bar"><span style="width:33%;"></span></div></div><span class="mission-reward"><img src="assets/icon-coin.png" alt="">+30</span></div>
+          </div>
+          <div class="tab-panel list-card" data-group="mission" data-tab="annual">
+            <div class="mission-item"><span class="mission-icon"><img src="assets/icon-community.png" alt=""></span><div class="mission-text"><h4>Ikuti 12 aktivitas komunitas</h4><div class="mission-bar"><span style="width:25%;"></span></div></div><span class="mission-reward"><img src="assets/icon-coin.png" alt="">+200</span></div>
+          </div>
+          <div class="bonus-card"><span class="gift">🎁</span><span>Complete all the daily missions to get bonus of <b>25 HealCoin!</b></span></div>
+        </div>
+      </section>
+
+      <!-- ============ CHAT ============ -->
+      <section class="screen" data-screen="chat">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn">🔍</button>
+ <img class="gambar-atas" src="assets/Email (72).png" alt="Gambar">             <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="chat-layout">
+          <div class="chat-sidebar">
+            <h4>Chats</h4>
+            <div class="chat-search">🔍 Search</div>
+            <div class="chat-entry" data-chat="circle" onclick="openChat('circle')"><span class="ce-avatar" style="background:#8a6a45;">👥</span><span>Circle Orang Hebat</span></div>
+            <div class="chat-entry active" data-chat="maya" onclick="openChat('maya')"><span class="ce-avatar"><img src="assets/avatar-maya.png" alt=""></span><span>Maya</span></div>
+            <div class="chat-entry" data-chat="milo" onclick="openChat('milo')"><span class="ce-avatar" style="background:#f0c96e;">👦</span><span>Milo</span></div>
+            <div class="chat-entry" data-chat="mima" onclick="openChat('mima')"><span class="ce-avatar" style="background:#8ec9e0;">👩</span><span>Mima</span></div>
+            <div class="chat-entry" data-chat="layla" onclick="openChat('layla')"><span class="ce-avatar"><img src="assets/avatar-you.png" alt=""></span><span>Layla</span></div>
+            <div class="chat-entry" data-chat="danies" onclick="openChat('danies')"><span class="ce-avatar" style="background:#c98e9a;">👨</span><span>Danies</span></div>
+          </div>
+          <div class="chat-main">
+            <div class="chat-main-header"><span class="ce-avatar" id="chatHeadAvatar"><img src="assets/avatar-maya.png" alt="" id="chatHeadAvatarImg"></span><b id="chatHeadName">Maya</b><span>📞</span></div>
+            <div class="chat-thread" id="chatThread"></div>
+            <div class="chat-input"><button class="icon-btn">+</button><input type="text" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="icon-btn" onclick="sendMsg()">➤</button></div>
+          </div>
+        </div>
+        <nav class="bottom-nav">
+          <button class="nav-item" onclick="goTo('home')"><span class="nav-icon">🏠</span><span>HeaLink-<br>Home</span></button>
+          <button class="nav-item" onclick="goTo('activity-hub')"><span class="nav-icon">🍃</span><span>HeaLink-<br>Activity</span></button>
+          <button class="nav-item" onclick="goTo('forest')"><span class="nav-icon">🌲</span><span>HeaLink-<br>Forest</span></button>
+          <button class="nav-item active" onclick="goTo('chat')"><span class="nav-icon">👥</span><span>HeaLink-<br>Community</span></button>
+          <button class="nav-item" onclick="goTo('profile')"><span class="nav-icon">👤</span><span>Profile</span></button>
+        </nav>
+      </section>
+
+      <!-- ============ PROFILE ============ -->
+      <section class="screen" data-screen="profile">
+        <div class="app-header">
+          <div class="header-row">
+            <button class="icon-btn">🔍</button>
+<img class="gambar-atas" src="assets/Email (73).png" alt="Gambar">            <button class="icon-btn" onclick="toggleMenu(true)">☰</button>
+          </div>
+        </div>
+        <div class="screen-body">
+          <div class="profile-hero">
+            <span class="pf-avatar"><img src="assets/avatar-you.png" alt=""></span>
+            <h3>Jemima Jasmine</h3>
+            <span>120 HealCoin · Level 3 Forest</span>
+            <div class="growth-level"><span>Level 3</span><span>60/100</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:60%;"></div></div>
+          </div>
+          <div class="profile-list">
+            <div class="profile-row" onclick="toast('Fitur ini masih dalam pengembangan')"><span class="pr-icon">👤</span>Edit Profil<span class="chev-right">›</span></div>
+            <div class="profile-row" onclick="toast('Fitur ini masih dalam pengembangan')"><span class="pr-icon">🔔</span>Notifikasi<span class="chev-right">›</span></div>
+            <div class="profile-row" onclick="goTo('healcoin')"><span class="pr-icon"><img src="assets/icon-coin.png" alt="" style="width:18px;height:18px;object-fit:contain;vertical-align:-3px;"></span>HealCoin Saya<span class="chev-right">›</span></div>
+            <div class="profile-row" onclick="goTo('support')"><span class="pr-icon">🩺</span>Dukungan Profesional<span class="chev-right">›</span></div>
+            <div class="profile-row" onclick="toast('Fitur ini masih dalam pengembangan')"><span class="pr-icon">🌐</span>Bahasa<span class="chev-right">›</span></div>
+<div class="profile-row" onclick="window.location.href='index.html'"><span class="pr-icon">🚪</span>Keluar<span class="chev-right">›</span></div>          </div>
+        </div>
+        <nav class="bottom-nav">
+          <button class="nav-item" onclick="goTo('home')"><span class="nav-icon">🏠</span><span>HeaLink-<br>Home</span></button>
+          <button class="nav-item" onclick="goTo('activity-hub')"><span class="nav-icon">🍃</span><span>HeaLink-<br>Activity</span></button>
+          <button class="nav-item" onclick="goTo('forest')"><span class="nav-icon">🌲</span><span>HeaLink-<br>Forest</span></button>
+          <button class="nav-item" onclick="goTo('chat')"><span class="nav-icon">👥</span><span>HeaLink-<br>Community</span></button>
+          <button class="nav-item active" onclick="goTo('profile')"><span class="nav-icon">👤</span><span>Profile</span></button>
+        </nav>
+      </section>
+
+      <!-- ============ SIDE MENU ============ -->
+      <div class="menu-overlay" id="menuOverlay" onclick="if(event.target===this)toggleMenu(false)">
+        <div class="side-menu">
+          <button class="menu-close" onclick="toggleMenu(false)">✕</button>
+          <h4>HealLink-Settings</h4>
+          <div class="profile">
+    
+    <div class="bagi2">
+   
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="menu-section">
+  <h4>Setting & Privacy</h4>
+  <a href="#"><img src="assets/editprofile.png" alt="Edit Profile"></a>
+  <a href="#"><img src="assets/username.png" alt="Username"></a>
+  <a href="#"><img src="assets/email2.png" alt="E-mail"></a>
+  <a href="#"><img src="assets/password2.png" alt="Password"></a>
+</div>
+
+<hr>
+
+<div class="menu-section">
+  <h4>Preference</h4>
+  <a href="#"><img src="assets/notification.png" alt="Notification"></a>
+  <a href="#"><img src="assets/language.png" alt="Language"></a>
+<a href="#" id="toggleColor">
+  <img src="assets/display.png" alt="Menu">
+</a>
+</div>
+
+<hr>
+
+<div class="menu-section">
+  <h4>Other Account</h4>
+  <a href="#"><img src="assets/addaccount.png" alt="Add Account"></a>
+  <a href="#"><img src="assets/switchaccount.png" alt="Switch Account"></a>
+  <a href="index.html"><img src="assets/logout.png" alt="Log Out"></a>
+</div>
+
+</div>
+        </div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+  </div>
+
+</div>
+
+<script>
+// ============ Navigation stack ============
+let historyStack = ['home'];
+
+function goTo(screenId, replace) {
+  const current = document.querySelector('.screen.active');
+  if (current) current.classList.remove('active');
+  const next = document.querySelector(`.screen[data-screen="${screenId}"]`);
+  if (next) next.classList.add('active');
+  const body = next ? next.querySelector('.screen-body') : null;
+  if (body) body.scrollTop = 0;
+
+  if (replace) {
+    historyStack[historyStack.length - 1] = screenId;
+  } else if (historyStack[historyStack.length - 1] !== screenId) {
+    historyStack.push(screenId);
+  }
+  toggleMenu(false);
+}
+
+function goBack() {
+  if (historyStack.length > 1) {
+    historyStack.pop();
+    const prev = historyStack[historyStack.length - 1];
+    goTo(prev, true);
+  } else {
+    goTo('home', true);
+  }
+}
+
+// ============ Side menu ============
+function toggleMenu(open) {
+  const overlay = document.getElementById('menuOverlay');
+  if (!overlay) return;
+  overlay.classList.toggle('open', open);
+}
+
+// ============ Toast ============
+let toastTimer = null;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ============ Mood picker (Home) ============
+function pickMood(btn, label, message) {
+  document.querySelectorAll('.mood-item').forEach(el => el.classList.remove('selected'));
+  btn.classList.add('selected');
+  toast(message);
+}
+
+// ============ Tabs (generic) ============
+function switchTab(group, tab) {
+  document.querySelectorAll(`.tab-btn[data-group="${group}"]`).forEach(el => {
+    el.classList.toggle('active', el.dataset.tab === tab);
+  });
+  document.querySelectorAll(`.tab-panel[data-group="${group}"]`).forEach(el => {
+    el.classList.toggle('active', el.dataset.tab === tab);
+  });
+}
+
+// ============ Session details ============
+function pickDate(el) {
+  el.parentElement.querySelectorAll('.date-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('slotDate').textContent = el.textContent;
+}
+function pickTime(el) {
+  el.parentElement.querySelectorAll('.time-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('slotTime').textContent = el.textContent;
+}
+function openSession(name, title, avatarSrc, rating) {
+  document.getElementById('sessName').textContent = name;
+  document.getElementById('sessTitle').textContent = '⭐ ' + rating + ' (128 Reviews)';
+  const img = document.getElementById('sessAvatarImg');
+  if (avatarSrc) {
+    img.src = avatarSrc;
+    img.style.display = 'block';
+  } else {
+    img.style.display = 'none';
+  }
+  goTo('session-details');
+}
+function bookSession() {
+  const date = document.getElementById('slotDate').textContent;
+  const time = document.getElementById('slotTime').textContent;
+  const name = document.getElementById('sessName').textContent;
+  toast(`Booking berhasil dengan ${name.split(',')[0]} — ${date}, ${time} ✅`);
+  setTimeout(() => goTo('activity-hub', true), 1200);
+}
+
+// ============ Podcast ============
+function togglePlay(card) {
+  const btn = card.querySelector('.ep-play');
+  const wasPlaying = btn.classList.contains('playing');
+  document.querySelectorAll('.ep-play.playing').forEach(b => { b.classList.remove('playing'); b.textContent = '▶'; });
+  if (!wasPlaying) {
+    btn.classList.add('playing');
+    btn.textContent = '❚❚';
+    toast('Memutar: ' + card.querySelector('h5').textContent);
+  }
+}
+
+// ============ Market / item detail ============
+let currentItem = null;
+function openItem(name, desc, price, img) {
+  currentItem = { name, desc, price, img };
+  document.getElementById('itemName').textContent = name;
+  document.getElementById('itemDesc').textContent = desc;
+  document.getElementById('itemPrice').textContent = price;
+  document.getElementById('itemImg').src = img;
+  goTo('item-detail');
+}
+function buyItem() {
+  if (!currentItem) return;
+  document.getElementById('confirmItem').textContent = currentItem.name;
+  toast(`${currentItem.name} dibeli seharga ${currentItem.price} HealCoin 🪙`);
+  setTimeout(() => goTo('forest-confirm'), 500);
+}
+
+// ============ Chat ============
+const chatData = {
+  circle: {
+    name: 'Circle Orang Hebat', avatarBg: '#8a6a45', avatarEmoji: '👥', avatarImg: null, group: true,
+    messages: [
+      { from: 'in', name: 'Maya', text: 'Halo semua! Yuk cek progress pohon minggu ini 🌳' },
+      { from: 'out', text: 'Aku baru saja nambah 5 pohon!' },
+      { from: 'in', name: 'Milo', text: 'Mantap! Kita tinggal butuh 75 pohon lagi.' },
+      { from: 'out', alt: true, text: 'Semangat semuanya 💪' }
+    ]
+  },
+  maya: {
+    name: 'Maya', avatarBg: '#e88ea3', avatarEmoji: '👩', avatarImg: 'assets/avatar-maya.png', group: false,
+    messages: [
+      { from: 'in', text: 'Hai! Udah isi jurnal hari ini belum?' },
+      { from: 'out', text: 'Belum nih, nanti malam deh' },
+      { from: 'in', text: 'Oke, semangat ya 🌱' },
+      { from: 'out', text: 'Makasih Maya!' }
+    ]
+  },
+  milo: {
+    name: 'Milo', avatarBg: '#f0c96e', avatarEmoji: '👦', avatarImg: null, group: false,
+    messages: [
+      
+    ]
+  },
+  mima: {
+    name: 'Mima', avatarBg: '#8ec9e0', avatarEmoji: '👩', avatarImg: null, group: false,
+    messages: [
+      
+    ]
+  },
+  layla: {
+    name: 'Layla', avatarBg: '#e0b58e', avatarEmoji: '👩', avatarImg: 'assets/avatar-you.png', group: false,
+    messages: [
+     
+    ]
+  },
+  danies: {
+    name: 'Danies', avatarBg: '#c98e9a', avatarEmoji: '👨', avatarImg: null, group: false,
+    messages: [
+     
+    ]
+  }
+};
+
+function renderChat(key) {
+  const data = chatData[key];
+  if (!data) return;
+  document.getElementById('chatHeadName').textContent = data.name;
+  const headAvatar = document.getElementById('chatHeadAvatar');
+  const headAvatarImg = document.getElementById('chatHeadAvatarImg');
+  if (data.avatarImg) {
+    headAvatar.style.background = 'none';
+    headAvatarImg.src = data.avatarImg;
+    headAvatarImg.style.display = 'block';
+  } else {
+    headAvatar.style.background = data.avatarBg;
+    headAvatarImg.style.display = 'none';
+    headAvatar.textContent = data.avatarEmoji;
+    headAvatar.appendChild(headAvatarImg);
+  }
+
+  const thread = document.getElementById('chatThread');
+  thread.innerHTML = '';
+  data.messages.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'bubble ' + m.from + (m.alt ? ' alt' : '');
+    div.textContent = (data.group && m.from === 'in' && m.name ? m.name + ': ' : '') + m.text;
+    thread.appendChild(div);
+  });
+  thread.scrollTop = thread.scrollHeight;
+}
+
+function openChat(key) {
+  document.querySelectorAll('.chat-entry').forEach(el => el.classList.toggle('active', el.dataset.chat === key));
+  renderChat(key);
+}
+
+function sendMsg() {
+  const input = document.querySelector('.chat-input input');
+  const text = input.value.trim();
+  if (!text) return;
+  const thread = document.getElementById('chatThread');
+  const div = document.createElement('div');
+  div.className = 'bubble out';
+  div.textContent = text;
+  thread.appendChild(div);
+  thread.scrollTop = thread.scrollHeight;
+  input.value = '';
+}
+
+
+// ============ Init ============
+document.addEventListener('DOMContentLoaded', () => {
+  renderChat('maya');
+});
+
+</script>
+</body>
+</html>

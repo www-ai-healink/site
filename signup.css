@@ -1,0 +1,252 @@
+/* RESET */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* SCREEN */
+.screen {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  min-height: 100svh;
+
+  background: linear-gradient(
+    135deg,
+    #faf6ed 0%,
+    #ebe6cd 40%,
+    #faf6ed 100%
+  );
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
+}
+
+/* WALLPAPER */
+.wallpaper {
+  position: fixed;      /* tetap di layar saat scroll */
+  bottom: 0;            /* menempel di bawah viewport */
+  left: 50%;            /* posisi horizontal di tengah */
+  transform: translateX(-50%);  /* supaya benar-benar tengah */
+  width: 100vw;          /* bisa atur lebar */
+  max-width: 700px;     /* jangan melebihi layar */
+  height: auto;         /* proporsional */
+  z-index: 0;           /* pastikan berada di belakang konten */
+  pointer-events: none; /* klik form tidak terganggu */
+  user-select: none;    /* tidak bisa di-select */
+}
+
+
+/* CONTENT */
+.content {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 100px;
+  margin-right: 1px;
+}
+
+/* LOGO */
+.logo {
+  width: 180px;
+  margin-bottom: 60px;
+  scale: 2.5;
+  left: 50%;
+}
+
+/* TITLE */
+.title-img {
+  width: 90vw;
+  max-width: 390px;
+}
+
+/* GENDER */
+.gender {
+  display: flex;
+  gap: 25px;
+  margin: 10px 0 15px;
+}
+
+.gender label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  color: #4d6b3a;
+}
+
+.gender img {
+  width: 100px;
+}
+
+/* FORM */
+.signup-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+    align-items: flex-start;
+
+}
+
+/* FIELD CONTAINER */
+.field-box {
+  background: #ffffff;
+  border: 1.5px solid #292d22;
+  border-radius: 15px;
+  padding: 5px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  text-align: left;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+/* ICON DI ATAS */
+.fieldFullname,
+.fieldregion,
+.fieldemail,
+.fieldpassword,
+.fieldconfirmpassword {
+  height: 30px;        /* samakan tinggi */
+  width: auto;         /* jaga proporsi */
+  display: block;
+  object-fit: contain;
+  align-items: flex-start;
+}
+
+
+
+/* LABEL */
+.field-box label {
+  font-size: 13px;
+  color: #4d6b3a;
+  margin-bottom: 6px;
+}
+
+/* INPUT */
+.field-box input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  font-size: 14px;
+  color: #4d6b3a;
+}
+
+
+/* INPUT BOX */
+.input-box {
+  display: flex;
+  align-items: center;
+  background: #e5f0b4;
+  border: 1px solid #b7d08f;
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.input-box img {
+  width: 20px;
+  margin-right: 8px;
+}
+
+.input-box input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  color: #4d6b3a;
+}
+
+/* bagi 2 */
+.bagian {
+  border: 4px solid rgb(255, 255, 255);
+  border-radius: 20px;
+  padding: 16px;          /* padding umum */
+  padding-right: 32px;    /* tambahan jarak khusus kanan */
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  width: 100%;
+ background: linear-gradient(
+    135deg,
+    #94a06e 0%,
+    #d2ca82 40%,
+    #94a06e 100%
+  );
+   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.5)
+}
+
+
+
+
+
+/* BUTTON */
+.btn-img {
+  margin-top: 15px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  width: 90vw;
+  max-width: 260px;
+  margin-left: auto;
+  margin-right: auto;
+
+  z-index: 3;
+}
+
+.btn-img img {
+  display:block;
+  width: 65%;
+ margin: 0 auto 20px auto;
+}
+
+.btn-img:hover {
+  transform: scale(1.03);
+  transition: 0.3s;
+}
+
+.btn-img img:active {
+  transform: scale(0.95);
+}
+
+
+
+/* Tombol Back fixed di kiri atas */
+.btn-back {
+  position: absolute;      /* tetap di layar saat scroll */
+  top: 10px;            /* jarak dari atas */
+  left: 10px;           /* jarak dari kiri */
+  z-index: 5;           /* di atas semua konten */
+  display: block;
+  cursor: pointer;
+}
+
+.btn-back img {
+  width: 25px;          /* sesuaikan ukuran icon */
+  height: auto;
+  display: block;
+}
+
+/* Hover efek (opsional) */
+.btn-back:hover img {
+  transform: scale(1.1);
+  transition: 0.2s;
+}
+button,
+a,
+div {
+  -webkit-tap-highlight-color: transparent;
+}
